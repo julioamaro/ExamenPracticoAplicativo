@@ -1,0 +1,38 @@
+﻿<div id="ModalProductos" class="modal" tabindex="-1" role="dialog"  >
+   <div class="modal-dialog" role="document">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5>Consulta de Productos</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+           <div class="modal-body">
+               <div class="form-group">
+                   <label>Clave</label>
+                   <input id="txtclaveProducto" name="txtclaveProducto" class="form-control" placeholder="Clave" />
+               </div>
+               <div class="form-group">
+                   <label>Descripcion</label>
+                   <input id="txtDescripcionProducto" name="txtDescripcionProducto" class="form-control" placeholder="Clave" />
+               </div>
+               <div class="table-responsive">
+                   <table class="table table-striped table-bordered table-hover">
+                       <thead style="background-color: silver">
+                           <tr>
+                               <td>Clave</td>
+                               <td>Descripcion</td>
+                           </tr>
+                       </thead>
+                       <tbody id="tablaProductos">
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="btnBuscarProducto">Buscar</button>
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           </div>
+       </div>
+   </div>
+</div>

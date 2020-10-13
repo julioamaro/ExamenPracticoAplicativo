@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron col-xs-12">
+    <div class="center-block">
+        <form>
+            <div class="container">
+                <div clas="form-group">
+                    <label for="uname"><b>Username</b></label>
+                    <input type="text" placeholder="Usuario" name="usuario" id="txtusuario" required>
+                </div>
+                <div clas="form-group">
+                    <label for="psw"><b>Password</b></label>
+                    <input type="password" placeholder="Password" name="psw" id="txtpassword" required>
+                </div>
+                <div clas="form-group">
+                    <input type="button" id="btnlogin" name="btnlogin" value="Ingresar" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        var objUser = {
+            login: function () {
+                $("#btnlogin").click(function () {
+                    var usuariosModels2 = {
+                        "UserName" :  $("#txtusuario").val(),
+                        "Pws"      :  $("#txtpassword").val()
+                    };
+
+                    var Data = JSON.stringify(usuariosModels2);
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Acceso", "Usuarios")',
+                        data: "{'UsariosModels':" + Data + "}",
+                        dataType: "text",
+                        contentType: "application/json; charset:utf-8",
+                        success: function (response) {
+                            var existUsuario = response;
+
+                            if (existUsuario == 1)
+                            {
+                                window.location.href = '@Url.Action("Index", "ProductosRamos")';
+                            }
+                            else
+                            {
+                                window.location.href = '@Url.Action("Index", "Home")';
+                                alert("Usuario Incorrecto favor de verificar datos")
+                            }
+                        },
+                        error: function (result) {
+                            alert('ERROR' + result.status + '' + result.statusText);
+                        }
+
+                    });
+                })
+            }
+        }
+
+        $(document).ready(function () {
+                objUser.login();
+        });
+
+    </script>
+}
+
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+

@@ -1,0 +1,166 @@
+﻿@model IEnumerable<Examen.Models.ProductosRamosView>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Seleccion Ramos y Productos</h2>
+
+<form>
+    <div class="form-group">
+        <div class="col">
+            @Html.Label("Ramo", "Ramo", new { @class = "btn btn-link", id = "lbRamo" })
+        </div>
+        <div class="col">
+            @Html.TextBox("Ramo", "", new { @class = "form-control", id = "txtRamo" })
+        </div>
+        <div class="col">
+            @Html.Label("", "Descripcion del Ramo", new { id = "lbDescripcion" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col">
+            @Html.Label("Producto", "Producto", new { @class = "btn btn-link", id = "lbProducto" })
+        </div>
+        <div class="col">
+            @Html.TextBox("Producto", "", new { @class = "form-control", id = "txtProducto" })
+        </div>
+        <div class="col">
+            @Html.Label("", "Descripcion del Producto", new { id = "lbDescripcionProducto" })
+        </div>
+    </div>
+</form>
+
+@Html.Partial("_PartialModalProducto")
+@Html.Partial("_PartialModalRamo")
+
+
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/bootbox/bootbox.js"></script>
+@section Scripts{
+    
+    <script>
+     var ObjProducto = {
+    MostrarModal: function () {
+        $("#lbProducto").click(function () {
+            var valorRamo = $("#txtRamo").val();
+            if (valorRamo === "") {
+                bootbox.alert("Favor de Seleccionar un ramo!");
+            }
+            else {
+                $("#ModalProductos").modal("show");
+            }
+        });
+    },
+    GetProductos: function (Descripcion, id) {
+        $("#txtProducto").val(id);
+        $("#lbDescripcionProducto").text(Descripcion);
+        $("#ModalProductos").modal("hide");
+    },
+    Buscar: function () {
+        $("#btnBuscarProducto").click(function () {
+            var productosModels2 = {
+                "id": $("#txtclaveProducto").val(),
+                "Descripcion": $("#txtDescripcionProducto").val(),
+                "idRamo": $("#txtRamo").val()
+            };
+
+            var Data = JSON.stringify(productosModels2);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Buscar", "Productos")',
+                data: "{'productosModels':" + Data + "}",
+                dataType: "json",
+                contentType: "application/json; charset:utf-8",
+                success: function (response) {
+                    var objproductos = response;
+
+                    if (objproductos == null) {
+                        bootbox.alert("La busqueda no obtuvo resultados!");
+                    }
+
+                    $('#tablaProductos').empty();
+
+                    $.each(objproductos, function (index) {
+                        $("#tablaProductos").append('<tr>' +
+                            '<td style="cursor: pointer" "><a href="javascript:ObjProducto.GetProductos(\'' + objproductos[index].Descripcion + '\',\'' + objproductos[index].id + '\')" > ' + objproductos[index].id + '</a></td>' +
+                            '<td >' + objproductos[index].Descripcion + '</td>' +
+                            '</tr>');
+                    });
+                },
+                error: function (result) {
+                    alert('ERROR' + result.status + '' + result.statusText);
+                }
+
+            });
+        })
+    }
+}
+
+     var objRamo = {
+    MostrarModal: function () {
+        $("#lbRamo").click(function () {
+            $("#ModalRamos").modal("show");
+        });
+    },
+    Buscar: function () {
+        $("#btnBuscarRamo").click(function () {
+            var RamosModels2 = {
+                "id": $("#txtclaveRamo").val(),
+                "Descripcion": $("#txtDescripcionRamo").val()
+            };
+
+            var Data = JSON.stringify(RamosModels2);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("buscar", "Ramos")',
+                data: "{'RamosModels':" + Data + "}",
+                dataType: "json",
+                contentType: "application/json; charset:utf-8",
+                success: function (response) {
+                    var objRamos = response;
+
+                    if (objRamos == null) {
+                        bootbox.alert("La busqueda no obtuvo resultados!");
+                    }
+
+                    $('#tablaRamos').empty();
+
+                    $.each(objRamos, function (index) {
+                        $("#tablaRamos").append('<tr>' +
+                            '<td style="cursor: pointer" "><a href="javascript:objRamo.GetRamos(\'' + objRamos[index].Descripcion + '\',\'' + objRamos[index].id + '\')" > ' + objRamos[index].id + '</a></td>' +
+                            '<td>' + objRamos[index].Descripcion + '</td>' +
+                            '</tr>');
+                    });
+
+                },
+                error: function (result) {
+                    alert('ERROR' + result.status + '' + result.statusText);
+                }
+
+            });
+        })
+    },
+    GetRamos: function (Descripcion, id) {
+        $("#txtRamo").val(id);
+        $("#lbDescripcion").text(Descripcion);
+        $("#ModalRamos").modal("hide");
+    },
+}
+
+$(document).ready(function () {
+    $("#txtProducto").prop('disabled', true);
+    $("#txtRamo").prop('disabled', true);
+    ObjProducto.MostrarModal();
+    ObjProducto.Buscar();
+
+    objRamo.MostrarModal();
+    objRamo.Buscar();
+    objRamo.MostrarModal();
+});
+    </script>
+    }
